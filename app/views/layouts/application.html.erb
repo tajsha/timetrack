@@ -1,0 +1,40 @@
+ <!DOCTYPE html>
+ <html>
+ <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= content_for?(:title) ? yield(:title) : "Timetrack" %></title>
+  <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Timetrack" %>">
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+  <%= csrf_meta_tags %>
+  <style type="text/css">
+    .white{
+      color: white !important;
+    }
+  </style>
+</head>
+<body class="<%= params[:controller]%>_controller">
+  <div id="wrapper">
+    <header>
+      <%= render 'layouts/navigation' %>
+    </header>
+    <main role="main">
+      <div id="page-content-wrapper">
+        <div class="pull-left">
+          <a href="/" class="nav-brand">
+            <%= image_tag 'logo.png', :class => "logo_image" %>
+          </a>
+        </div>
+        <div class="pull-right">
+          <% if user_signed_in? %>
+              <a style="color: black; font-size: x-large;" class="navbar-brand " href="users/edit"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;<%= current_user.name %></a><% else %><%= link_to 'Sign in',  new_user_session_path, :class => "navbar-brand white" %><% end %>
+        </div>
+      </div>
+      <%= render 'layouts/messages' %>
+      <%= yield %>
+    </main>
+  </div>
+</body>
+</html>
+
+

@@ -1,0 +1,28 @@
+<tr id ="invite-<%= @company.id%>-<%= @member.user_id %>">
+	<td colspan = "8" class = "form-group">
+		<%= simple_form_for [@company, @member], :url => update_member_company_path, :method => :post , remote: true do |f| %>
+          <%= f.input :user_id, :as => :hidden %>
+		<table class = 'table'>
+			<tr>
+				<td class ="form-group">
+					<%=@member.user.email%>
+				</td>
+				<td class = "form-group">
+					<%= f.select(:role, UsersCompany::ROLES.map {|role| [role.titleize, role.titleize]}) %>
+				</td>
+				<td width="3%" class="form-group"><a href='#' id='update_member', data-remote="true" ><i class="fa fa-check"></i></a>
+				</td>
+			</tr>
+			
+		</table>
+		<%end%>
+	</td>
+</tr>
+
+<script type="text/javascript">
+	$('#update_member').on('click', function(){
+		console.log(this);
+		$(this).closest('form').submit();
+		$("tr#invite-<%= @company.id %>-<%= @member.user_id %>").replaceWith("<%= j render(:partial => 'show_member') %>");
+	});
+</script>

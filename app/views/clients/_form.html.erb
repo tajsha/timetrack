@@ -1,0 +1,10 @@
+<%= simple_form_for(@client , id: 'new_client', remote: true) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inline">
+    <%= f.association :company, collection: current_user.companies,prompt: 'Company', label: false  %>
+    <%= f.input :name , placeholder: 'Name', label: false%>
+    <%= f.input :address, placeholder: 'Address', label: false %>
+    <%= f.button :submit, :style => 'vertical-align: top;',:class => 'btn btn-primary'  %>
+  </div>
+<% end %>

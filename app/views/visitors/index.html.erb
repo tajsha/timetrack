@@ -1,0 +1,7 @@
+<div>
+  <h1 class="text-center">Activities</h1>
+    <% @histories.each do |history| %>
+        <%= render :partial => history.trackable_name, locals: { history: history } %>
+        <hr>
+    <% end %>
+</div>

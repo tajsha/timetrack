@@ -1,0 +1,7 @@
+<% if @project.errors.present? %>
+	$('#project_form_div').html("<%= j render(:partial => 'form') %>");
+<% else %>
+	$('#new_project')[0].reset();
+	$('tbody').prepend("<%= j render(:partial => 'project', locals: {project: @project}) %>");
+	$table.trigger('update');
+<% end %>

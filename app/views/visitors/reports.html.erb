@@ -1,0 +1,142 @@
+<h3 class="text-center">Statistics</h3>
+<form action='/export'	id="export" target='_blank'>
+<div class='row'>
+	<div id='yearSelect' class="form-group col-md-6">
+		<label for="year">Select year:</label>
+		<select class="form-control" id="year" name="year">
+		</select>
+	</div>
+
+	<div id='monthDiv' class="form-group col-md-6">
+		<label for="month">Select month:</label>
+		<select class="form-control" id="month" name="month">
+			<option value=0>All</option>
+			<option value=1>Jan</option>
+			<option value=2>Feb</option>
+			<option value=3>Mar</option>
+			<option value=4>Apr</option>
+			<option value=5>May</option>
+			<option value=6>Jun</option>
+			<option value=7>Jul</option>
+			<option value=8>Aug</option>
+			<option value=9>Sep</option>
+			<option value=10>Oct</option>
+			<option value=11>Nov</option>
+			<option value=12>Dec</option>  	
+		</select>
+	</div>
+</div>
+<div class='row'>
+	<div class="form-group col-md-6">
+		<label for="company">Select company:</label>
+		<select class="form-control" id="company" name="company">
+			<option value='0'>All</option>
+			<% @companies.each do |company| %>
+			<option value=<%= company.id %>><%= company.name%></option>
+			<% end %>
+		</select>
+	</div>
+
+	<div id='clientDiv' class="form-group  col-md-6" style="display :none">
+		<label for="client">Select client:</label>
+		<select class="form-control" id="client" name="client">
+			<option value='0'>All</option>
+			<% @clients.each do |c| %>
+			   <option value='<%= c.id %>' data-company='<%= c.company_id %>' display='none'><%= c.name %></option>
+			<% end %>			
+		</select>
+	</div>
+	<div id='resourcesDiv' class="form-group  col-md-6" style="display :none">
+		<label for="resources">Select Resource:</label>
+		<select class="form-control" id="resources" name="resources">
+            <option></option>
+			<% @resources.each do |r| %>
+			   <option value='<%= r.user_id %>' data-company='<%= r.company_id %>' ><%= r.user.name %>(<%= r.user.email %>)</option>
+			<% end %>			
+		</select>
+	</div>
+</div>
+</form>
+<div class="row">
+	<div  class="col-md-3">
+	<button id="export" class="btn btn-success">Export CSV</button>
+	</div>
+</div>
+<div id="chartContainer" class='row col-md-12'><%= @chart.render() %></div>
+<br>
+<script type="text/javascript">
+$(document).ready(function(){
+
+	$('#year').change(function(){
+		$.ajax({url: "/reports?year="+$('#year').val()+"&company="+$('#company').val()+"&client="+$('#client').val()+"&month="+$('#month').val(), success: function(result){
+			$("#chartContainer").html(result);
+		}});
+	});
+	var myDate = new Date();
+	var year = myDate.getFullYear();
+	var option=""
+	for(var i = year; i >=2010 ; i--){
+		option+= '<option value="'+i+'">'+i+'</option>';
+	}
+	$('#year').html(option);
+
+	$('#company').change(function(){
+		$('#resources').html("<% @resources.each do |r| %><option value='<%= r.user_id %>' data-company='<%= r.company_id %>'><%= r.user.name %>(<%= r.user.email %>)</option><% end %>");
+		if ($('#company').val()=='0') {
+			$('#client').val('0');$('#clientDiv').hide();
+		}else{
+			console.log("company All  "+($('#company').val()=='0'))
+			$('#clientDiv').show();$('#resourcesDiv').show();
+			$("#clientDiv select option").hide();
+			$("#clientDiv select option[data-company='"+$('#company').val()+"']").show();
+			$("#clientDiv select option[value='0']").show();
+			$("#resourcesDiv select option").hide();
+			var companyResources =$("#resourcesDiv select option[data-company='"+$('#company').val()+"']");
+			$('#resources').html('');
+			$("#resources").append(companyResources);
+			$('#resources').select2({width: '100%',
+        allowClear: true,
+        multiple: true,
+        placeholder: "Resources"
+    });
+			$('#resources').select2("val", " ");
+		}
+		$.ajax({url: "/reports?year="+$('#year').val()+"&company="+$('#company').val()+"&client="+$('#client').val()+"&month="+$('#month').val(), success: function(result){
+			$("#chartContainer").html(result);
+		}});
+	});
+
+	$('#client').change(function(){
+		$.ajax({url: "/reports?year="+$('#year').val()+"&company="+$('#company').val()+"&client="+$('#client').val()+"&month="+$('#month').val(), success: function(result){
+			$("#chartContainer").html(result);
+		}});
+	});
+
+	$('#month').change(function(){
+		$.ajax({url: "/reports?year="+$('#year').val()+"&company="+$('#company').val()+"&client="+$('#client').val()+"&month="+$('#month').val(), success: function(result){
+			$("#chartContainer").html(result);
+		}});
+	});
+
+	$('#resources').change(function(){
+		console.log('resource change')
+		$.ajax({url: "/reports",
+			type: 'get',
+			data:{
+				year: $('#year').val(), 
+				company: $('#company').val(),
+				client: $('#client').val(),
+				month: $('#month').val(),
+				resources: $('#resources').val()
+			},
+			success: function(result){
+			$("#chartContainer").html(result);
+		}});
+	});
+	$('button#export').on('click',function(){
+		console.log('sfhfdg');
+		event.preventDefault();
+		$('form#export').submit();
+	});
+});
+</script>

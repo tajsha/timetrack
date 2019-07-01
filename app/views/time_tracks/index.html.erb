@@ -1,0 +1,207 @@
+<p id="notice"><%= notice %></p>
+<div id="time_track_form_div">
+<%= render 'form' %>
+</div>
+<hr>
+<div class="group2">
+    <div class="container-fluid ">
+      <div class="btn-group">
+        <button type="button" class="btn btn-default reset">Reset</button> <!-- targeted by the "filter_reset" option -->
+
+        <!-- Split button -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-default download">Download</button>
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu" role="menu" style="min-width: 320px;font-size: 12px;padding: 10px;">
+            <li><h5><strong>Output options</strong></h5></li>
+            <li>
+              <label>Separator: <input class="output-separator-input" type="text" size="2" value=","></label>
+              <button type="button" class="output-separator btn btn-default btn-xs active" title="comma">,</button>
+              <button type="button" class="output-separator btn btn-default btn-xs" title="semi-colon">;</button>
+              <button type="button" class="output-separator btn btn-default btn-xs" title="tab">&nbsp;&nbsp;</button>
+              <button type="button" class="output-separator btn btn-default btn-xs" title="space">&nbsp;</button>
+              <button type="button" class="output-separator btn btn-default btn-xs" title="output JSON">json</button>
+              <button type="button" class="output-separator btn btn-default btn-xs" title="output Array (see note)">array</button>
+            </li>
+            <li>
+              <div class="btn-group output-download-popup" data-toggle="buttons" title="Download file or open in Popup window">
+                <label class="btn btn-default btn-sm active">
+                  <input type="radio" name="delivery2" class="output-popup" checked=""> Popup
+                </label>
+                <label class="btn btn-default btn-sm">
+                  <input type="radio" name="delivery2" class="output-download"> Download
+                </label>
+              </div>
+            </li>
+            <li>
+              <div class="btn-group output-filter-all" data-toggle="buttons" title="Output only filtered, visible or all rows">
+                <label class="btn btn-default btn-sm active">
+                  <input type="radio" name="getrows2" class="output-filter" checked=""> Filtered
+                </label>
+                <label class="btn btn-default btn-sm">
+                  <input type="radio" name="getrows2" class="output-visible"> Visible
+                </label>
+                <label class="btn btn-default btn-sm">
+                  <input type="radio" name="getrows2" class="output-all"> All
+                </label>
+              </div>
+            </li>
+            <li class="divider"></li>
+            <li>
+              <label>Replace quotes: <input class="output-replacequotes" type="text" size="2" value="'"></label>
+              <button type="button" class="output-quotes btn btn-default btn-xs active" title="single quote">'</button>
+              <button type="button" class="output-quotes btn btn-default btn-xs" title="left double quote">“</button>
+              <button type="button" class="output-quotes btn btn-default btn-xs" title="escaped quote">\"</button>
+            </li>
+            <li><label title="Remove extra white space from each cell">Trim spaces: <input class="output-trim" type="checkbox" checked=""></label></li>
+            <li><label title="Include HTML from cells in output">Include HTML: <input class="output-html" type="checkbox"></label></li>
+            <li><label title="Wrap all values in quotes">Wrap in Quotes: <input class="output-wrap" type="checkbox"></label></li>
+            <li><label title="Include both header rows in output">Include both header rows: <input class="output-headers" type="checkbox" checked=""></label></li>
+            <li><label title="Choose a download filename">Filename: <input class="output-filename" type="text" size="15" value="mytable.csv"></label></li>
+          </ul>
+        </div>
+
+      </div>
+      <div class="pull-right">
+        <label>Show upto:</label>
+        <select id="time_track_filter">
+          <option value="7d">Last 7 Days</option>
+          <option value="0m" selected>Current month</option>
+          <option value="1m" >Last 1 month</option>
+          <option value="3m">Last 3 months</option>
+          <option value="6m">Last 6 months</option>
+          <option value="9m">Last 9 months</option>
+          <option value="1y">Last Year</option>
+          <option value="0">From beginning</option>
+        </select>
+      </div>
+    </div>
+  <table class="table time_tracks" id = "table">
+      <thead>
+        <tr>
+          <th style="width: 100px;" >Work Date</th>
+          <th style="width: 100px;" >Project</th>
+          <th style="width: 100px;" >User</th>
+          <th style="width: 50px;" >Hours</th>
+          <th style="width: 100px;" >Label</th>
+          <th>Description</th>
+          <th colspan="3" class="filter-false"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @time_tracks.each do |time_track| %>
+          <tr id="<%= time_track.id %>">
+              <td width="12%" align="center"><%= time_track.work_date %> </td>
+              <td align="center"><%= time_track.project.try(:name) %></td>
+              <td align="center"><%= time_track.user.name %></td>
+              <td align="center"><%= time_track.number_of_hours %></td>
+              <td align="center"><%= time_track.labels.map(&:name).collect{|n| n.capitalize}.join(', ') %></td>
+              <td><%= time_track.description %></td>
+              <td width="3%" align="center"><%= link_to edit_time_track_path(time_track), :remote => true do %><i class="fa fa-pencil"></i><% end %></td>
+              <td width="3%" align="center"><%= link_to time_track, method: :delete, data: {confirm: 'Are you sure?'} do %><i class="fa fa-times"></i><%end%></td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+         <div class=".ts-pager">
+            <tr>
+                <th colspan="8" class="ts-pager form-horizontal">
+                  <button type="button" class="btn first">
+                    <i class="icon-step-backward glyphicon glyphicon-step-backward"></i>
+                  </button>
+                  <button type="button" class="btn prev">
+                    <i class="icon-arrow-left glyphicon glyphicon-backward"></i>
+                  </button>
+                  <span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+                  <button type="button" class="btn next">
+                    <i class="icon-arrow-right glyphicon glyphicon-forward"></i>
+                  </button>
+                  <button type="button" class="btn last">
+                    <i class="icon-step-forward glyphicon glyphicon-step-forward"></i>
+                  </button>
+                  <select class="pagesize input-mini" title="Select page size">
+                    <option selected="selected" value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                  </select>
+                  <select class="pagenum input-mini" title="Select page number">
+                    <option selected="selected" value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
+                </th>
+            </tr>
+         </div>
+      </tfoot>
+  </table>
+</div>
+
+
+
+<script type="text/javascript">
+
+  $(function(){
+   $("table").tablesorterPager({
+    container: $(".ts-pager"),
+    size: '20',
+    cssGoto  : ".pagenum",
+    removeRows: false,
+    output: '{page}/{totalPages}'
+  });
+ });
+  function cancel(id) {
+    console.log('dit');
+    $('#'+id+'Edit').hide();$('#'+id).show();
+
+  };
+  function update(element) {
+    console.log(element);
+    $(element).closest('form').submit();
+    $('.datepicker').datepicker({format: 'yyyy-mm-dd',autoclose: true, minView: 2});
+  }; 
+
+    function formatRepo(item){
+        return item.name;
+    }
+
+    function formatRepoSelection(item){
+        return item.name;
+    }
+    $("#time_track_label").select2({
+        width: '100px',
+        allowClear: true,
+        multiple: true,
+        placeholder: "Label",
+        ajax: {
+            url: "/time_tracks/label_search",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    search: params.term // search term
+                    //page: params.page
+                };
+            },
+            processResults: function (data, page) {
+                // parse the results into the format expected by Select2.
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data
+                return {
+                    results: data.labels,
+                    more: false
+                }
+            },
+            cache: true
+        },
+        minimumInputLength: 1,
+        templateResult: formatRepo, // omitted for brevity, see the source of this page
+        templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+    });
+</script>
+
+

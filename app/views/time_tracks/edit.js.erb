@@ -1,0 +1,8 @@
+if(!$("#<%= @time_track.id %>Edit").length){
+	console.log("tr#<%= @time_track.id %>");
+	$('tr#<%= @time_track.id %>').hide();
+	$("<%= j render(:partial => 'time_tracks/edit') %>").insertAfter('tr#<%= @time_track.id %>');
+}
+$('tr#<%= @time_track.id %>').hide();$('tr#<%= @time_track.id %>Edit').show();
+$table.trigger('update');
+$('.datepicker').datepicker({format: 'yyyy-mm-dd',autoclose: true, minView: 2});

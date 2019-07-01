@@ -1,0 +1,6 @@
+<% if @company.errors.present? %>
+	$('#company_form_div').html("<%= j render(:partial => 'form') %>");
+<% else %>
+	$('#mymodal').modal('hide');
+	$('#showCompany').replaceWith("<%= j render(:partial => 'show') %>");
+<% end %>

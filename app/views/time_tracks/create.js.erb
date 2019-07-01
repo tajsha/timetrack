@@ -1,0 +1,8 @@
+<% if @time_track.errors.present? %>
+	$('#time_track_form_div').html("<%= j render(:partial => 'time_tracks/form') %>");
+<% else %>
+	$('#new_time_track')[0].reset();
+	$('select#time_track_label').select2('val', 'All');
+	$('tbody').prepend("<%= j render(:partial => 'time_tracks/time_track', locals: {time_track: @time_track}) %>");
+	$('table').trigger('update');
+<% end %>

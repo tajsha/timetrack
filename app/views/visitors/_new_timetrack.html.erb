@@ -1,0 +1,16 @@
+<div class="media">
+  <a class="pull-left" href="javascript:void(0);" style="pointer-events: none;">
+      <%= image_tag 'timetrack.png', size: "64x64", alt: history.title, :class => "media-object" %>
+    </a>
+  <div class="media-body">
+    <h4 class="media-heading"><%= history.title %></h4>
+    <div class="row">
+      <div class="col-md-6"><strong>Project:</strong> <%= history.project.name %></div>
+      <div class="col-md-6"><strong>Hours:</strong> <%= history.history_metadata['number_of_hours'] %> hrs</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6"><strong>Description:</strong> <%= history.history_metadata['description'] %></div>
+      <div class="col-md-6"><small>Created <%= time_ago_in_words(history.history_metadata['updated_at']) %> ago by <strong><%= history.user.name %></strong></small></div>
+    </div>
+  </div>
+</div>

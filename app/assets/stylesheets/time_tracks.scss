@@ -1,0 +1,26 @@
+// Place all the styles related to the TimeTracks controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.tablesorter thead .disabled {display: none}
+.edit_time_track{
+  .table{
+    border: none;
+  }
+  tbody > tr:hover > td{
+    background-color: transparent;
+  }
+  .form-group input, .form-group .select2 .select2-selection, .form-group select{
+    border-radius: 0px;
+    border: none;
+    -webkit-box-shadow: none;
+    -box-shadow: none;
+  }
+  .table, .form-group{
+    margin-bottom: 0px;
+    padding: 0px;
+    vertical-align: middle;
+    text-align: center;
+    border-top: none;
+    border-bottom: none;
+  }
+}

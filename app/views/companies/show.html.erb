@@ -1,0 +1,153 @@
+<p id="notice"><%= notice %></p>
+<div id="company_show"; style="background-color: green ;background-repeat: repeat-x;background-size: contain;">
+  <br/>
+  <!-- <p align="right"><a href='#', data-remote='true'><i class="fa fa-pencil" style="font-size: 15px;color: white;"></i></p> -->
+  <p align="right"><button type="button" id="mdl" data-target = "#mymodal" class="btn btn-success"><i class="fa fa-pencil" style="font-size: 15px"></i></button>
+</p>
+<!-- <p align="right"><button id="myBtn" >Edit Company</button></p> -->
+<br/>
+<div id="showCompany">
+<p align="center">
+  <font color="white" size="6px">
+    <strong><%= @company.name %></strong>
+  </font>
+</p>
+<p align="center">
+  <font color="white">
+    <%= @company.address %>
+  </font>
+</p>
+<br/>
+<br/>
+<br/>
+</div>
+</div>
+<!-- modal -->
+<div id="mymodal" class="modal fade" role="dialog">
+  <div id="responsive" class="modal-dialog">
+    <!-- modal content -->
+    <div id="responsive" class="modal-content">
+    <div class="modal-header"><p align="right"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 class="modal-title">Editing company</h3>
+    <div class="modal-body">
+    <div id="company_form_div">
+    
+      <%= simple_form_for(@company, :remote => true) do |f| %>
+        <div class="form-inline">
+          <%= f.input :name, placeholder: 'Name', label: false %>
+          <%= f.input :address, placeholder: 'Address', label: false %>
+          <%= f.button :submit,:style => 'vertical-align: top;', :class => 'btn btn-primary' %>
+          <%= f.error_notification %>
+        </div>
+      <% end %>
+      </div>
+    </div>  
+    </div>
+    </div>
+  </div>
+</div>
+
+
+
+<br/>
+
+<h1>Members</h1>
+<table class="table members">
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Status</th>
+      <th colspan="2" class="filter-false"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% company_users_emails = @company.users.pluck(:email) %>
+    <% @company.users.each do |member| %>
+    <tr id="invite-<%= @company.id%>-<%= member.id%>">
+      <td><%= member.email %></td>
+      <td><%= (UsersCompany.user_role(@company.id,member.id)).capitalize  %></td>
+      <% if company_admin?(@company, current_user) and (member != current_user)%>
+      <td width="5%"><%= link_to edit_member_company_path(@company,:member => member.id) , remote: true do %><i class="fa fa-pencil"></i><%end%></td>
+      <td width="5%"><%= link_to destroy_member_company_path(@company,:member => member.id), method: :delete, data: {confirm: 'Are you sure?'} do %><i class="fa fa-times"></i><%end%></td>
+      <% else %>
+      <td></td>
+      <td></td>
+      <%end%>
+    </tr>
+    <%end%>
+
+    <% invited_users = [] %>
+    <% @company.invites.uniq{|i| i.email }.each do |invite| %>
+    <% if (invite.recipient.present? == false) and (invited_users.include?(invite.email) == false) %>
+    <% invited_users << invite.email %>
+    <tr>
+      <td><%= invite.email %></td>
+      <td>Invited</td>
+      <td width="5%"></td>
+      <td width="5%"><%= link_to destroy_invite_company_path(:invite => invite.id), method: :delete, data: {confirm: 'Are you sure?'} do%><i class="fa fa-times"></i><%end%></td>
+    </tr>
+    <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<%= simple_form_for @company, :url => {:action => 'invite_to'}, :method => :post do |f| %>
+<div class="form-inputs">
+  <div class="form-group">
+    <%= f.label 'Add members' %>
+    <%= f.select :members_emails, [], {}, { :multiple => true} %>
+  </div>
+</div>
+
+<div class="form-actions">
+  <%= f.button :submit, 'Add', :class => 'btn btn-primary'  %>
+</div>
+<% end %>
+
+<script type="text/javascript">
+  function formatRepo(item){
+    return item.email;
+  }
+
+  function formatRepoSelection(item){
+    return item.email;
+  }
+  $("#company_members_emails").select2({
+    width: '100%',
+    allowClear: true,
+    multiple: true,
+    placeholder: "Click here and start typing to search.",
+    ajax: {
+      url: "/users/search", 
+      dataType: 'json',
+      delay: 250,
+      data: function (params) {
+        return {
+                    search: params.term // search term
+                    //page: params.page
+                  };
+                },
+                processResults: function (data, page) {
+                // parse the results into the format expected by Select2.
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data
+                return {
+                  results: data.users,
+                  more: false
+                }
+              },
+              cache: true
+            },
+            minimumInputLength: 1,
+        templateResult: formatRepo, // omitted for brevity, see the source of this page
+        templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+      });
+
+$("#mdl").click(function(){
+  $('#mymodal').modal('show');
+});
+
+</script>
+
+

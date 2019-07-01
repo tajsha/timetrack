@@ -1,0 +1,8 @@
+<tr id="invite-<%= @company.id%>-<%= @member.user_id%>">
+        <td><%= @member.user.email %></td>
+        <td><%= @member.role %></td>
+        <% if company_admin?(@company, current_user) and (@member != current_user)%>
+        <td width="3%"><%= link_to edit_member_company_path(@company,:member => @member.user_id) , remote: true do %><i class="fa fa-pencil"></i><%end%></td>
+        <td width="3%"><%= link_to destroy_member_company_path(@company,:member => @member.user_id), method: :delete, data: {confirm: 'Are you sure?'} do %><i class="fa fa-times"></i><%end%></td>
+        <%end%>
+</tr>

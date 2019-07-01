@@ -1,0 +1,9 @@
+<%= simple_form_for(@company , id: 'new_company', remote: true) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inline">
+    <%= f.input :name, placeholder: 'Name', label: false %>
+    <%= f.input :address, placeholder: 'Address', label: false %>
+    <%= f.button :submit, :style => 'vertical-align: top;',:class => 'btn btn-primary'  %>
+  </div>
+<% end %>

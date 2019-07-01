@@ -1,0 +1,86 @@
+<tr id="<%= @time_track.id %>Edit" style="border: 2px solid grey;">
+	<td colspan="8" class ="form-group" style="padding: 0px; ">
+        <div id="time_track_table_div">
+            <%= simple_form_for(@time_track, remote: true) do |f| %>
+                
+                <table class='table'>
+                    <tr id='<%=@time_track.id%>'>
+                        <td class ="form-group" style="width: 11.9%;">
+                            <%= f.input :work_date, as: :string, input_html:{class: "datepicker" }, placeholder:'Date', label: false, :maxlength => 10 %>
+                        </td >
+                        <td class="form-group" style="width: 100px">
+                            <%= f.association :project, prompt: 'Project', label: false  %>
+                        </td>
+                        <td class="form-group" style="width: 100px; text-align: center; vertical-align: middle;">
+                            <%= @time_track.user.name %>
+                        </td>
+                        <td class="form-group" style="width: 58px">
+                            <%= f.input :number_of_hours, placeholder: 'Hours', label: false %>
+                        </td>
+                        <td class="form-group" style="width: 100px;">
+                            <select multiple="" name="label[]" id="time_track_label_<%= @time_track.id %>"></select>
+                        </td>
+                        <td class="form-group">
+                            <%= f.input :description, :input_html => {:maxlength => 255, :size => 30}, placeholder: 'Description', label: false%>
+                        </td>
+                        <td width="3%" class="form-group"><a href="javascript:void(0);" onclick="update(this)" id='update_time_track', data-remote="true"><i class="fa fa-check"></i></a>
+                        </td>
+                        <td width="3%" class="form-group" style="border-right: 0px;"><a  href="javascript:void(0);" id="<%= @time_track.id %>Cancel" onclick="cancel('<%= @time_track.id %>')"><i class="fa fa-times"></i></a></td>
+                    </tr>
+                </table>
+            <% end %>
+        </div>
+    </td>
+</tr>
+
+<script type="text/javascript">
+
+	function formatRepo(item){
+		return item.name;
+	}
+	function formatRepoSelection(item){
+		return item.name;
+	}
+	var $timetrack = $("#time_track_label_<%= @time_track.id %>").select2({
+		width: '99px',
+		allowClear: true,
+		multiple: true,
+		placeholder: "Label",
+		ajax: {
+			url: "/time_tracks/label_search",
+			dataType: 'json',
+			delay: 250,
+			data: function (params) {
+				return {
+                    search: params.term // search term
+                    //page: params.page
+                };
+            },
+            processResults: function (data, page) {
+                // parse the results into the format expected by Select2.
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data
+                return {
+                	results: data.labels,
+                	more: false
+                }
+            },
+            cache: true
+        },
+        initSelection: function (item, callback) {
+            var data = [];
+            <% if @time_track.labels.present?%>
+                <% @time_track.labels.each do |label| %>
+                    data.push({id: "<%= label.name %>", name: "<%= label.name.capitalize %>"})
+                <% end %>
+            <% end %>
+            callback(data);
+        },
+        minimumInputLength: 1,
+        templateResult: formatRepo, // omitted for brevity, see the source of this page
+        templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+    });
+
+    $('.datepicker').datepicker({format: 'yyyy-mm-dd',autoclose: true, minView: 2});
+</script>
+

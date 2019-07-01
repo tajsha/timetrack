@@ -1,0 +1,7 @@
+<% if @time_track.errors.present? %>
+	$('#time_track_table_div').html("<%= j render(:partial => 'time_tracks/edit') %>");
+<% else %>
+$('tr#<%= @time_track.id %>').remove();
+$('tr#<%= @time_track.id %>Edit').replaceWith("<%= j render(:partial => 'time_tracks/time_track', locals: {time_track: @time_track}) %>");
+$table.trigger('update');
+<% end %>

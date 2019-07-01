@@ -1,0 +1,8 @@
+ <tr id="<%=project.id %>">
+      <td><%= link_to project.client.company.name, company_url(project.client.company)%></td>
+      <td><%= project.client.name %></td>
+      <td><%= project.name %></td>
+      <td><%= project.description %></td>
+        <td width="3%"><%= link_to edit_project_path(project) do %><i class="fa fa-pencil"></i><%end%></td>
+        <td width="3%"><%= link_to project, method: :delete, data: {confirm: 'Are you sure?'} do %><i class="fa fa-times"></i><%end%></td>
+ </tr>

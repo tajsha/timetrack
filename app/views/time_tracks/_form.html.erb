@@ -1,0 +1,53 @@
+
+<%= simple_form_for(@time_track, id: 'new_time_track', remote: true) do |f| %>
+
+<div class="form-inline">
+	
+		<%= f.input :work_date, as: :string, input_html:{class: "datepicker", :value => (@time_track.work_date || Date.today), :style => 'width: 110px'}, placeholder:'Date', label: false, :max => 3 %>
+		<%= f.association :project, collection: current_user.projects, prompt: 'Project', label: false  %>
+		<%= f.input :number_of_hours,:input_html => {:style=> 'width: 100px'}, placeholder: 'Hours', label: false %>
+        <select multiple="" name="label[]" id="time_track_label"></select>
+		<%= f.input :description, :input_html => {:maxlength => 255, :size => 40}, placeholder: 'Description', label: false%>
+        <%= f.button :submit, :style => 'vertical-align: top;',:class => 'btn btn-primary'  %>
+	
+</div>
+<% end %>
+<script type="text/javascript">
+	function formatRepo(item){
+        return item.name;
+    }
+
+    function formatRepoSelection(item){
+        return item.name;
+    }
+	$("#time_track_label").select2({
+        width: '100px',
+        allowClear: true,
+        multiple: true,
+        placeholder: "Label",
+        ajax: {
+            url: "/time_tracks/label_search",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    search: params.term // search term
+                    //page: params.page
+                };
+            },
+            processResults: function (data, page) {
+                // parse the results into the format expected by Select2.
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data
+                return {
+                    results: data.labels,
+                    more: false
+                }
+            },
+            cache: true
+        },
+        minimumInputLength: 1,
+        templateResult: formatRepo, // omitted for brevity, see the source of this page
+        templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+    });
+</script>

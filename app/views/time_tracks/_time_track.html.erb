@@ -1,0 +1,15 @@
+
+<tr id="<%= time_track.id%>">
+
+	<td width="12%" align="center"><%= time_track.work_date %></td>
+	<td align="center"><%= time_track.project.try(:name) %></td>
+	<td align="center"><%= time_track.user.name %></td>
+	<td align="center"><%= time_track.number_of_hours %></td>
+	<td align="center"><%= time_track.labels.map(&:name).collect{|n| n.capitalize}.join(',') %></td>
+	<td><%= time_track.description %></td>
+	<td width="3%" align="center"><%= link_to edit_time_track_path(time_track), :remote => true do %><i class="fa fa-pencil"></i><% end %></td>
+	<td width="3%" align="center"><%= link_to time_track_path(time_track), method: :delete, data: {confirm: 'Are you sure?'} do %><i class="fa fa-times"></i><%end%></td>
+	
+
+</tr>
+

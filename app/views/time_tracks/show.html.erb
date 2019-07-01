@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Project:</strong>
+  <%= @time_track.project.try(:name) %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @time_track.user.try(:name) %>
+</p>
+
+<p>
+  <strong>Number of hours:</strong>
+  <%= @time_track.number_of_hours %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @time_track.description %>
+</p>
+
+<%= link_to 'Edit', edit_time_track_path(@time_track) %> |
+<%= link_to 'Back', time_tracks_path %>

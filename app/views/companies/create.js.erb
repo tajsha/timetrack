@@ -1,0 +1,7 @@
+<% if @company.errors.present? %>
+	$('#company_form_div').html("<%= j render(:partial => 'form') %>");
+<% else %>
+	$('#new_company')[0].reset();
+	$('tbody').prepend("<%= j render(:partial => 'company', locals: {company: @company}) %>");
+	$table.trigger('update');
+<% end %>

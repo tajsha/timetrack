@@ -1,0 +1,7 @@
+<tr id="<%=client.id %>">
+        <td><%= link_to client.company.name, company_path(client.company) %></td>
+        <td><%= client.name %></td>
+        <td><%= client.address %></td>
+        <td width="3%"><%= link_to edit_client_path(client) do %><i class="fa fa-pencil"></i><%end%></td>
+        <td width="3%"><%= link_to client, method: :delete, data: {confirm: 'Are you sure?'} do %><i class="fa fa-times"></i><%end%></td>
+</tr>

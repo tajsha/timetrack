@@ -1,0 +1,7 @@
+<% if @client.errors.present? %>
+	$('#clients_form_div').html("<%= j render(:partial => 'form') %>");
+<% else %>
+	$('#new_client')[0].reset();
+	$('tbody').prepend("<%= j render(:partial => 'clients', locals: {client: @client}) %>");
+	$table.trigger('update');
+<% end %>
